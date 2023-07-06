@@ -1,8 +1,7 @@
 # Define the applications properties here:
 
-TARGET = ./dist/PocketSNES.dge
+TARGET = PocketSNES
 
-CROSS_COMPILE ?= mipsel-linux-
 
 CC  := $(CROSS_COMPILE)gcc
 CXX := $(CROSS_COMPILE)g++
@@ -19,8 +18,9 @@ INCLUDE = -I pocketsnes \
 
 CFLAGS = $(INCLUDE) -DRC_OPTIMIZED -DGCW_ZERO -DGCW_JOYSTICK -D__LINUX__ -D__DINGUX__ -DFOREVER_16_BIT -DLAGFIX
 # CFLAGS += -ggdb3 -Og
-CFLAGS += -Ofast -fdata-sections -ffunction-sections -mips32r2 -mno-mips16 -mplt -mno-shared
+#CFLAGS += -Ofast -fdata-sections -ffunction-sections -mips32r2 -mno-mips16 -mplt -mno-shared
 CFLAGS += -fomit-frame-pointer -fno-builtin -fno-common -flto=4 -fno-unroll-loops
+CFLAGS += -marm -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -march=armv7ve -ffast-math -fomit-frame-pointer -fno-strength-reduce 
 CFLAGS += -DFAST_ALIGNED_LSB_WORD_ACCESS
 CFLAGS += $(SDL_CFLAGS)
 ifdef PROFILE_GEN

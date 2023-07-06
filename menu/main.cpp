@@ -259,77 +259,11 @@ uint32 S9xReadJoypad (int which1)
 
 	u32 joy = sal_InputPoll();
 	
-	switch(mMenuOptions.menuKeystroke)
+	if (joy & SAL_INPUT_MENU)
 	{
-		case 0:
-        		if (((joy & SAL_INPUT_SELECT) && (joy & SAL_INPUT_START))
-        		 || (joy & SAL_INPUT_MENU))
-        		{
-                		mEnterMenu = 1;
-                		return val;
-		        }
-			break;
-		case 1:
-                        if (((joy & SAL_INPUT_L) && (joy & SAL_INPUT_R))
-                         || (joy & SAL_INPUT_MENU))
-                        {
-                                mEnterMenu = 1;
-                                return val;
-                        }
-			break;
-		case 2:
-                        if (((joy & SAL_INPUT_SELECT) && (joy & SAL_INPUT_START) && (joy & SAL_INPUT_L) && (joy & SAL_INPUT_R))
-                         || (joy & SAL_INPUT_MENU))
-                        {
-                                mEnterMenu = 1;
-                                return val;
-                        }
-			break;
-		default:
-                        if ((joy & SAL_INPUT_MENU))
-                        {
-                                mEnterMenu = 1;
-                                return val;
-                        }
-			break;
-	}
-	
-	/*if (((joy & SAL_INPUT_SELECT) && (joy & SAL_INPUT_START))
-	 || (joy & SAL_INPUT_MENU))
-	{
-		mEnterMenu = 1;		
-		return val;
-	}*/
-
-#if 0
-	if ((joy & SAL_INPUT_L)&&(joy & SAL_INPUT_R)&&(joy & SAL_INPUT_UP))
-	{
-		if(mVolumeTimer==0)
-		{
-			mMenuOptions.volume++;
-			if(mMenuOptions.volume>31) mMenuOptions.volume=31;
-			sal_AudioSetVolume(mMenuOptions.volume,mMenuOptions.volume);
-			mVolumeTimer=5;
-			mVolumeDisplayTimer=60;
-			sprintf(mVolumeDisplay,"Vol: %d",mMenuOptions.volume);
-		}
-		return val;
-	}
-
-	if ((joy & SAL_INPUT_L)&&(joy & SAL_INPUT_R)&&(joy & SAL_INPUT_DOWN))
-	{
-		if(mVolumeTimer==0)
-		{
-			mMenuOptions.volume--;
-			if(mMenuOptions.volume>31) mMenuOptions.volume=0;
-			sal_AudioSetVolume(mMenuOptions.volume,mMenuOptions.volume);
-			mVolumeTimer=5;
-			mVolumeDisplayTimer=60;
-			sprintf(mVolumeDisplay,"Vol: %d",mMenuOptions.volume);
-		}
-		return val;
-	}
-#endif
+    		mEnterMenu = 1;
+    		return val;
+    }
 
 	if (joy & SAL_INPUT_Y) val |= SNES_Y_MASK;
 	if (joy & SAL_INPUT_A) val |= SNES_A_MASK;

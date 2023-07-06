@@ -47,28 +47,25 @@ enum  MENU_ENUM
 
 enum SETTINGS_MENU_ENUM
 {
-	SETTINGS_MENU_FULLSCREEN = 0,
-	SETTINGS_MENU_FRAMESKIP,
-	SETTINGS_MENU_FPS,
-	SETTINGS_MENU_SOUND_ON,
-//	SETTINGS_MENU_SOUND_VOL,
-	SETTINGS_MENU_SOUND_RATE,
-	SETTINGS_MENU_SOUND_STEREO,
-#ifdef GCW_JOYSTICK
-	SETTINGS_MENU_ANALOG_JOY,
-#endif
-	SETTINGS_MENU_SOUND_SYNC,
-	MENU_KEYSTROKE,
-	SETTINGS_MENU_AUTO_SAVE_SRAM,
-	SAVESTATE_MENU_SAVE_SRAM,
-//	SETTINGS_MENU_CPU_SPEED,
-	SETTINGS_MENU_LOAD_GLOBAL_SETTINGS,
-	SETTINGS_MENU_SAVE_GLOBAL_SETTINGS,
-	SETTINGS_MENU_LOAD_CURRENT_SETTINGS,
-	SETTINGS_MENU_SAVE_CURRENT_SETTINGS,
-	SETTINGS_MENU_DELETE_CURRENT_SETTINGS,
-	MENU_CREDITS,
-	SETTINGS_MENU_COUNT
+	SETTINGS_MENU_FULLSCREEN = 0, //scaling
+	SETTINGS_MENU_FRAMESKIP,//1
+	SETTINGS_MENU_FPS,//2
+	SETTINGS_MENU_SOUND_ON,//3
+//	SETTINGS_MENU_SOUND_VOL,//
+	SETTINGS_MENU_SOUND_RATE,//4
+	//SETTINGS_MENU_SOUND_STEREO,//5
+	SETTINGS_MENU_SOUND_SYNC,//6
+//	MENU_KEYSTROKE,
+	SETTINGS_MENU_AUTO_SAVE_SRAM,//7
+	SAVESTATE_MENU_SAVE_SRAM,//8
+	//SETTINGS_MENU_CPU_SPEED,//9
+	SETTINGS_MENU_LOAD_GLOBAL_SETTINGS,//10
+	SETTINGS_MENU_SAVE_GLOBAL_SETTINGS,//11
+	SETTINGS_MENU_LOAD_CURRENT_SETTINGS,//12
+	SETTINGS_MENU_SAVE_CURRENT_SETTINGS,//13
+	SETTINGS_MENU_DELETE_CURRENT_SETTINGS,//14
+//	MENU_CREDITS,//15
+	SETTINGS_MENU_COUNT//16
 };
 
 
@@ -139,18 +136,6 @@ struct MENU_OPTIONS
   unsigned int cpuSpeed;
   unsigned int soundRate;
   unsigned int soundSync;
-#ifdef GCW_JOYSTICK
-  unsigned int analogJoy;
-#else
-  unsigned int spare02;
-#endif
-  unsigned int menuKeystroke;
-  unsigned int spare04;
-  unsigned int spare05;
-  unsigned int spare06;
-  unsigned int spare07;
-  unsigned int spare08;
-  unsigned int spare09;
 };
 
 struct SAVE_STATE
@@ -165,9 +150,6 @@ struct SAVE_STATE
 //####################################
 void MenuInit(const char *systemDir, struct MENU_OPTIONS *menuOptions);
 s32 MenuRun(s8 *romName);
-//void LoadSram(const char *path, const char *romname, const char *ext, const char *srammem);
-//void SaveSram(const char *path, const char *romname, const char *ext, const char *srammem);
-//void DeleteSram(const char *path, const char *romname, const char *ext);
 s32 SaveMenuOptions(const char *path, const char *filename, const char *ext,
 			const char *optionsmem, s32 maxSize, s32 showMessage);
 s32 LoadMenuOptions(const char *path, const char *filename, const char *ext,

@@ -45,13 +45,10 @@ void DefaultMenuOptions(void)
 	mMenuOptions->country=0;
 	mMenuOptions->showFps=0;
 	mMenuOptions->soundRate=44100;
-	mMenuOptions->fullScreen=3;
+	mMenuOptions->fullScreen=0;
 	mMenuOptions->autoSaveSram=1;
 	mMenuOptions->soundSync=1;
-#ifdef GCW_JOYSTICK
-	mMenuOptions->analogJoy=0;
-#endif
-	mMenuOptions->menuKeystroke=0;
+//	mMenuOptions->menuKeystroke=0;
 }
 
 s32 LoadMenuOptions(const char *path, const char *filename, const char *ext,
@@ -955,7 +952,7 @@ void ShowCredits()
 	s32 menuExit=0,menuCount=0,menufocus=0,menuSmooth=0;
 	u32 keys=0;
 
-	strcpy(mMenuText[menuCount++],"PocketSNES - built " __DATE__);
+	strcpy(mMenuText[menuCount++],"PocketSNES for miyoo mini - built " __DATE__);
 	strcpy(mMenuText[menuCount++],"-------------------------------------");
 	strcpy(mMenuText[menuCount++],"Based on Snes9x version " VERSION /* snes9x.h */);
 	strcpy(mMenuText[menuCount++],"PocketSNES created by Scott Ramsby");
@@ -965,6 +962,7 @@ void ShowCredits()
 	strcpy(mMenuText[menuCount++],"Port to RetroGame by Steward-Fu");
 	strcpy(mMenuText[menuCount++],"RetroGame optimizations by Sauce,");
 	strcpy(mMenuText[menuCount++],"pingflood and m45t3r");
+	strcpy(mMenuText[menuCount++],"mm port by bankbank");
 
 	sal_InputIgnore();
 	while (!menuExit)
@@ -1029,23 +1027,6 @@ void SettingsMenuUpdateText(s32 menu_index)
 {
 	switch(menu_index)
 	{
-		case MENU_KEYSTROKE:
-			switch(mMenuOptions->menuKeystroke)
-			{
-				case 0:
-					strcpy(mMenuText[MENU_KEYSTROKE], "Menu combo         Start+Select");
-					break;
-				case 1:
-					strcpy(mMenuText[MENU_KEYSTROKE], "Menu combo                  L+R");
-					break;
-				case 2:
-					strcpy(mMenuText[MENU_KEYSTROKE], "Menu combo     L+R+Start+Select");
-					break;
-				default:
-					strcpy(mMenuText[MENU_KEYSTROKE], "Menu combo    Power Button only");
-					break;
-			}
-
 		case SAVESTATE_MENU_SAVE_SRAM:
 			strcpy(mMenuText[SAVESTATE_MENU_SAVE_SRAM],"Save SRAM now");
 
@@ -1119,19 +1100,6 @@ void SettingsMenuUpdateText(s32 menu_index)
 					strcpy(mMenuText[SETTINGS_MENU_FULLSCREEN],"Video scaling          HARDWARE");
 					break;
 			}
-#ifdef GCW_JOYSTICK
-		case SETTINGS_MENU_ANALOG_JOY:
-			switch(mMenuOptions->analogJoy)
-			{
-				case 0:
-					strcpy(mMenuText[SETTINGS_MENU_ANALOG_JOY],"Analogue Joystick           OFF");
-					break;
-				case 1:
-					strcpy(mMenuText[SETTINGS_MENU_ANALOG_JOY],"Analogue Joystick            ON");
-					break;
-			}
-			break;
-#endif
 		case SETTINGS_MENU_LOAD_GLOBAL_SETTINGS:
 			strcpy(mMenuText[SETTINGS_MENU_LOAD_GLOBAL_SETTINGS],"Load global settings");
 			break;
@@ -1151,10 +1119,11 @@ void SettingsMenuUpdateText(s32 menu_index)
 		case SETTINGS_MENU_DELETE_CURRENT_SETTINGS:
 			strcpy(mMenuText[SETTINGS_MENU_DELETE_CURRENT_SETTINGS],"Delete game settings");
 			break;
-
+/*
 		case MENU_CREDITS:
 			strcpy(mMenuText[MENU_CREDITS],"Credits");
 			break;
+*/
 	}
 }
 
@@ -1167,9 +1136,6 @@ void SettingsMenuUpdateTextAll(void)
 	SettingsMenuUpdateText(SETTINGS_MENU_FPS);
 	SettingsMenuUpdateText(SETTINGS_MENU_SOUND_SYNC);
 	SettingsMenuUpdateText(SETTINGS_MENU_FULLSCREEN);
-#ifdef GCW_JOYSTICK
-	SettingsMenuUpdateText(SETTINGS_MENU_ANALOG_JOY);
-#endif
 	SettingsMenuUpdateText(SETTINGS_MENU_LOAD_GLOBAL_SETTINGS);
 	SettingsMenuUpdateText(SETTINGS_MENU_SAVE_GLOBAL_SETTINGS);
 	SettingsMenuUpdateText(SETTINGS_MENU_LOAD_CURRENT_SETTINGS);
@@ -1177,8 +1143,7 @@ void SettingsMenuUpdateTextAll(void)
 	SettingsMenuUpdateText(SETTINGS_MENU_DELETE_CURRENT_SETTINGS);
 	SettingsMenuUpdateText(SETTINGS_MENU_AUTO_SAVE_SRAM);
 	SettingsMenuUpdateText(SAVESTATE_MENU_SAVE_SRAM);
-	SettingsMenuUpdateText(MENU_CREDITS);
-	SettingsMenuUpdateText(MENU_KEYSTROKE);
+//	SettingsMenuUpdateText(MENU_CREDITS);
 }
 
 static
@@ -1322,10 +1287,12 @@ s32 SettingsMenu(void)
 						usleep(5e5);
 					}
 					break;
+/*
 				case MENU_CREDITS:
 					ShowCredits();
 					MainMenuUpdateTextAll();
 					break;
+*/
 			}
 		}
 		else if ((keys & (SAL_INPUT_LEFT | SAL_INPUT_RIGHT))
@@ -1333,20 +1300,6 @@ s32 SettingsMenu(void)
 		{
 			switch(menufocus)
 			{
-				case MENU_KEYSTROKE:
-					if(keys & SAL_INPUT_RIGHT)
-					{
-						mMenuOptions->menuKeystroke=(mMenuOptions->menuKeystroke + 1) % 4;
-					}
-					else
-					{
-                                                if(mMenuOptions->menuKeystroke == 0)
-                                                        mMenuOptions->menuKeystroke=3;
-                                                else
-                                                        mMenuOptions->menuKeystroke--; 
-					}
-					SettingsMenuUpdateText(MENU_KEYSTROKE);
-					break;
 				case SETTINGS_MENU_SOUND_ON:
 					mMenuOptions->soundEnabled^=1;
 					SettingsMenuUpdateText(SETTINGS_MENU_SOUND_ON);
@@ -1381,48 +1334,6 @@ s32 SettingsMenu(void)
 					SettingsMenuUpdateText(SETTINGS_MENU_SOUND_SYNC);
 					break;
 
-#if 0
-				case SETTINGS_MENU_CPU_SPEED:
-					
-					if (keys & SAL_INPUT_RIGHT)
-					{
-						if(keys&INP_BUTTON_MENU_SELECT)
-						{
-							mMenuOptions->cpuSpeed=sal_CpuSpeedNextFast(mMenuOptions->cpuSpeed);
-						}
-						else
-						{
-							mMenuOptions->cpuSpeed=sal_CpuSpeedNext(mMenuOptions->cpuSpeed);
-						}	
-					}
-					else
-					{
-						if(keys&INP_BUTTON_MENU_SELECT)
-						{
-							mMenuOptions->cpuSpeed=sal_CpuSpeedPreviousFast(mMenuOptions->cpuSpeed);
-						}
-						else
-						{
-							mMenuOptions->cpuSpeed=sal_CpuSpeedPrevious(mMenuOptions->cpuSpeed);
-						}
-					}
-					SettingsMenuUpdateText(SETTINGS_MENU_CPU_SPEED);
-					break;
-				case SETTINGS_MENU_SOUND_VOL:
-					if (keys & SAL_INPUT_RIGHT)
-					{
-						mMenuOptions->volume+=1;
-						if(mMenuOptions->volume>31) mMenuOptions->volume=0;
-					}
-					else
-					{
-						mMenuOptions->volume-=1;
-						if(mMenuOptions->volume>31) mMenuOptions->volume=31;
-
-					}
-					SettingsMenuUpdateText(SETTINGS_MENU_SOUND_VOL);
-					break;
-#endif
 				case SETTINGS_MENU_SOUND_RATE:
 					if (keys & SAL_INPUT_RIGHT)
 					{
@@ -1467,12 +1378,6 @@ s32 SettingsMenu(void)
 					}
 					SettingsMenuUpdateText(SETTINGS_MENU_FULLSCREEN);
 					break;
-#ifdef GCW_JOYSTICK
-				case SETTINGS_MENU_ANALOG_JOY:
-					mMenuOptions->analogJoy^=1;
-					SettingsMenuUpdateText(SETTINGS_MENU_ANALOG_JOY);
-					break;
-#endif
 			}
 		}
 		else if ((keys & (SAL_INPUT_UP | SAL_INPUT_DOWN))
@@ -1516,14 +1421,6 @@ s32 MenuRun(s8 *romName)
 		strcpy(mRomName,romName);
 		return action;
 	}
-
-#if 0
-	if((mMenuOptions->autoSaveSram) && (mRomName[0]!=0))
-	{
-		MenuMessageBox("Saving SRAM...","","",MENU_MESSAGE_BOX_MODE_MSG);
-		S9xSaveSRAM(0);
-	}
-#endif
 
 	MainMenuUpdateTextAll();
 	sal_InputIgnore();
